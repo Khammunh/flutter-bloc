@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use, avoid_unnecessary_containers, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutterbloc/screen/singin/sing_in_screen.dart';
+import 'package:flutterbloc/screen/signin/sign_in_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
