@@ -8,9 +8,25 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit()
       : super(
           AuthInitialState(),
-        );
+        ) {
+    User? currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      // Logged In
+      emit(
+        AuthLoggedInState(firebaseUser: currentUser),
+      );
+    } else {
+      // Logged Out
+      emit(
+        AuthLoggedOutState(),
+      );
+    }
+  }
 
   void sendOTP(String phoneNumber) async {
+    emit(
+      AuthLoadingState(),
+    );
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       codeSent: (verificationId, forceResendingToken) {
@@ -36,6 +52,9 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   void verifyOTP(String otp) async {
+    emit(
+      AuthLoadingState(),
+    );
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
       verificationId: _verificationId!,
       smsCode: otp,
@@ -49,7 +68,9 @@ class AuthCubit extends Cubit<AuthState> {
           await _auth.signInWithCredential(credential);
       if (userCredential.user != null) {
         emit(
-          AuthLoggedInState(),
+          AuthLoggedInState(
+            firebaseUser: userCredential.user!,
+          ),
         );
       }
     } on FirebaseAuthException catch (ex) {
@@ -59,5 +80,12 @@ class AuthCubit extends Cubit<AuthState> {
         ),
       );
     }
+  }
+
+  void logOut() async {
+    await _auth.signOut();
+    emit(
+      AuthLoggedOutState(),
+    );
   }
 }

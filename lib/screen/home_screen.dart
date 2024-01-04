@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_cubit.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_state.dart';
 import 'package:flutterbloc/cubit/internet_cubit.dart';
+
+import 'signin_phone/sign_in_screen_phone.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,6 +14,34 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
+        actions: [
+          BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthLoggedOutState) {
+                Navigator.popUntil(
+                  context,
+                  (route) => route.isFirst,
+                );
+                 Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignInScreenPhone(),
+                          ),
+                        );
+              }
+            },
+            builder: (context, state) {
+              return IconButton(
+                onPressed: () {
+                  BlocProvider.of<AuthCubit>(context).logOut();
+                },
+                icon: const Icon(
+                  Icons.exit_to_app,
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Center(

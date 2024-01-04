@@ -1,9 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_cubit.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_state.dart';
 import 'package:flutterbloc/screen/home_screen.dart';
 
 class VerifyPhoneNumberScreen extends StatelessWidget {
-  const VerifyPhoneNumberScreen({super.key});
+  VerifyPhoneNumberScreen({super.key});
 
+  TextEditingController otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,35 +24,68 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TextField(
+                  TextField(
+                    controller: otpController,
+                    keyboardType: TextInputType.number,
                     maxLength: 6,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: "6-Digit OTP",
                       counterText: "",
                     ),
                   ),
                   const SizedBox(height: 50),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => const HomeScreen(),
+                  BlocConsumer<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthLoggedInState) {
+                        Navigator.popUntil(
+                          context,
+                          (route) => route.isFirst,
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        );
+                      } else if (state is AuthErrorState) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.red,
+                            duration:const Duration(milliseconds: 2000),
+                            content: Text(
+                              state.error,
                             ),
-                            (route) => false);
-                      },
-                      child: const Text(
-                        'Verify Phone Number',
-                        style: TextStyle(
-                          color: Colors.white,
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthLoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                          ),
+                          onPressed: () {
+                            BlocProvider.of<AuthCubit>(context).verifyOTP(
+                              otpController.text,
+                            );
+                          },
+                          child: const Text(
+                            'Verify Phone Number',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   )
                 ],
               ),

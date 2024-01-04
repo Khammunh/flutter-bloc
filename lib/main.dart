@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterbloc/cubit/internet_cubit.dart';
-import 'package:flutterbloc/welcome/welcome_screen.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_state.dart';
 import 'firebase_options.dart';
+import 'screen/signin_phone/sign_in_screen_phone.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -21,10 +22,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => InternetCubit(),
-      child: const MaterialApp(
+      create: (context) => AuthCubit(),
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: WelcomeScreen(),
+        home: BlocBuilder<AuthCubit, AuthState>(buildWhen: (
+          oldState,
+          newState,
+        ) {
+          return oldState is AuthInitialState;
+        }, builder: (context, state) {
+          if (state is AuthLoggedInState) {
+            return SignInScreenPhone();
+          } else if (state is AuthLoggedOutState) {
+            return SignInScreenPhone();
+          } else {
+            return const Scaffold();
+          }
+        }),
       ),
     );
   }

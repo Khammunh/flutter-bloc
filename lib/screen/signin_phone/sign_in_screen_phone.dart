@@ -1,8 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_cubit.dart';
+import 'package:flutterbloc/cubit/auth_cubit/auth_state.dart';
 import 'package:flutterbloc/screen/signin_phone/verify_phone_number.dart';
 
 class SignInScreenPhone extends StatelessWidget {
-  const SignInScreenPhone({super.key});
+  SignInScreenPhone({super.key});
+
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,37 +26,56 @@ class SignInScreenPhone extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TextField(
+                  TextField(
+                    controller: phoneController,
                     maxLength: 10,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Phone Number',
+                      hintText: '12345678',
                       counterText: '',
                     ),
                   ),
                   const SizedBox(height: 100),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
+                  BlocConsumer<AuthCubit, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthCodeSentState) {
+                        Navigator.push(
+                          context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                const VerifyPhoneNumberScreen(),
+                            builder: (context) => VerifyPhoneNumberScreen(),
                           ),
                         );
-                      },
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthLoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                          ),
+                          onPressed: () {
+                            String phoneNumber =
+                                // "+85620" + phoneController.text;
+                                "+85620${phoneController.text}";
+                            BlocProvider.of<AuthCubit>(context)
+                                .sendOTP(phoneNumber);
+                          },
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   )
                 ],
               ),
