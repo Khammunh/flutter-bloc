@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterbloc/screen/signin/sign_in_bloc.dart';
 import 'package:flutterbloc/screen/signin/sign_in_screen.dart';
+import 'package:flutterbloc/screen/signin_phone/sign_in_screen_phone.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -45,6 +46,29 @@ class WelcomeScreen extends StatelessWidget {
               },
               child: const Text(
                 'Sign in with Email',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+                padding: EdgeInsets.all(10),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => SignInBloc(),
+                      child: SignInScreenPhone(),
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Sign in with Phone OTP',
                 style: TextStyle(
                   color: Colors.white,
                 ),

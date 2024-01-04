@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterbloc/cubit/internet_cubit.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home Screen'),
+      ),
       body: SafeArea(
         child: Center(
           child: BlocConsumer<InternetCubit, InternetState>(
@@ -20,9 +22,8 @@ class HomeScreen extends StatelessWidget {
                     backgroundColor: Colors.green,
                   ),
                 );
-              }
-              else if (state == InternetState.Lost){
-                 ScaffoldMessenger.of(context).showSnackBar(
+              } else if (state == InternetState.Lost) {
+                ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Internet not connected!'),
                     backgroundColor: Colors.red,
