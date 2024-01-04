@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use, avoid_unnecessary_containers, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/screen/signin/sign_in_bloc.dart';
 import 'package:flutterbloc/screen/signin/sign_in_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -34,7 +36,10 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SingInScreen(),
+                    builder: (context) => BlocProvider(
+                      create: (context) => SignInBloc(),
+                      child: SingInScreen(),
+                    ),
                   ),
                 );
               },

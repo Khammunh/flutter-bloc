@@ -2,9 +2,10 @@ abstract class SignInState {}
 
 class SignInInitialState extends SignInState {}
 
-class SignInInvalidState extends SignInState {}
+class SignInInValidState extends SignInState {}
 
-class SignInValidState extends SignInState {}
+
+class SignInLoadingState extends SignInState{}
 
 class SignInErrorState extends SignInState {
   final String errorMessage;

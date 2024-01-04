@@ -1,9 +1,16 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: avoid_unnecessary_containers, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/screen/signin/sign_in_bloc.dart';
+import 'package:flutterbloc/screen/signin/sign_in_event.dart';
+import 'package:flutterbloc/screen/signin/sign_in_state.dart';
 
 class SingInScreen extends StatelessWidget {
-  const SingInScreen({super.key});
+  SingInScreen({super.key});
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,27 +31,78 @@ class SingInScreen extends StatelessWidget {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           children: [
-            const TextField(
+            BlocBuilder<SignInBloc, SignInState>(
+              builder: (context, state) {
+                if (state is SignInErrorState) {
+                  return Text(
+                    state.errorMessage,
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+            TextField(
+              controller: emailController,
+              onChanged: (val) {
+                BlocProvider.of<SignInBloc>(context).add(
+                  SignInTextChangedEvent(
+                    emailValue: emailController.text,
+                    passwordValue: passwordController.text,
+                  ),
+                );
+              },
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(hintText: 'Email Address'),
+              decoration: const InputDecoration(hintText: 'Email Address'),
             ),
             const SizedBox(height: 10),
-            const TextField(
-              decoration: InputDecoration(hintText: 'Password'),
+            TextField(
+              controller: passwordController,
+              onChanged: (val) {
+                BlocProvider.of<SignInBloc>(context).add(
+                  SignInTextChangedEvent(
+                    emailValue: emailController.text,
+                    passwordValue: passwordController.text,
+                  ),
+                );
+              },
+              decoration: const InputDecoration(hintText: 'Password'),
             ),
             const SizedBox(height: 80),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.all(10),
-              ),
-              onPressed: () {},
-              child: const Text(
-                'Sing in',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+            BlocBuilder<SignInBloc, SignInState>(
+              builder: (context, state) {
+                if (state is SignInLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (state is SignInInValidState)
+                        ? Colors.blue
+                        : Colors.grey,
+                    padding: const EdgeInsets.all(10),
+                  ),
+                  onPressed: () {
+                    if (state is SignInInValidState) {
+                      BlocProvider.of<SignInBloc>(context).add(
+                        SignInSubmittedEvent(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    'Sing in',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
