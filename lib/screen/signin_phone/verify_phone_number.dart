@@ -52,7 +52,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             backgroundColor: Colors.red,
-                            duration:const Duration(milliseconds: 2000),
+                            duration: const Duration(milliseconds: 2000),
                             content: Text(
                               state.error,
                             ),
@@ -73,6 +73,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                             backgroundColor: Colors.blue,
                           ),
                           onPressed: () {
+                            // print(otpController);
                             BlocProvider.of<AuthCubit>(context).verifyOTP(
                               otpController.text,
                             );
