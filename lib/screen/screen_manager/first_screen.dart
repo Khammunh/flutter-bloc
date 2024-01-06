@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterbloc/cubit_manager/first_cubit.dart';
-import 'package:flutterbloc/cubit_manager/second_cubit.dart';
-import 'package:flutterbloc/screen/screen_manager/second_screen.dart';
 
 class FirstScreen extends StatelessWidget {
   const FirstScreen({super.key});
@@ -16,15 +14,16 @@ class FirstScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => SecondCubit(),
-                    child: const SecondScreen(),
-                  ),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => BlocProvider(
+              //       create: (context) => SecondCubit(),
+              //       child: const SecondScreen(),
+              //     ),
+              //   ),
+              // );
+              Navigator.pushNamed(context, "/second");
             },
             icon: const Icon(Icons.arrow_forward),
           ),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterbloc/cubit_manager/first_cubit.dart';
 import 'package:flutterbloc/screen/screen_manager/first_screen.dart';
 import 'firebase_options.dart';
+import 'screen/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,12 +48,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (context) => FirstCubit(),
-        child:const FirstScreen(),
-      ),
+      onGenerateRoute: Routes.onGenerateRoute,
+      initialRoute: "/first",
     );
   }
 }
