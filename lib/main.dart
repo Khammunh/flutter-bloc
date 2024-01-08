@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutterbloc/bloc_API/data/repositories/post_repository.dart';
 import 'package:flutterbloc/bloc_API/presentation/screens/home_screen.dart';
+import 'bloc_API/data/models/post_model.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -8,6 +12,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // PostRepository postRepository = PostRepository();
+  // List<PostModel> postModels = await postRepository.fetchPosts();
+
+  // log(postModels.toString() );
   runApp(
     const MyApp(),
   );
