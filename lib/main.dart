@@ -1,10 +1,9 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutterbloc/bloc_API/data/repositories/post_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterbloc/bloc_API/data/logic/post_cubit/post_cubit.dart';
 import 'package:flutterbloc/bloc_API/presentation/screens/home_screen.dart';
-import 'bloc_API/data/models/post_model.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -66,9 +65,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreeAPI(),
+    return BlocProvider(
+      create: (context) => PostCubit(),
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreeAPI(),
+      ),
     );
   }
 }
